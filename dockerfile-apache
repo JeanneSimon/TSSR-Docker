@@ -1,0 +1,28 @@
+FROM ubuntu
+
+# Mise à jour de la liste des packets (pour obtenir leurs versions)
+RUN apt update
+
+# Mise à jour des packets installés
+RUN apt upgrade -y -q
+
+# Varaibles d'environnement (ici pour lancer l'install de manière non interactive)
+ENV DEBIAN_FRONTEND=noninteractive
+
+# installation d'un packet (ici apache 2)
+RUN apt install apache2 -y
+
+# Copie des fichiers du dossier ./web dans /var/www/
+COPY ./web /var/www/
+
+RUN echo "Installation terminée, démarage du service Apache..."
+
+# Exposition du port du container
+EXPOSE 80
+
+# Comande à exécuter au lancement du container
+CMD [ "/etc/init.d/apache2", "start" ]
+
+# Dans PowerShell :
+# docker build -t test-apache .
+# docker run -p 8080:80 test-apache
